@@ -7,34 +7,39 @@ import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { useUser } from "@/userContext";
 
+// Fetch backend API URL from environment variables
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function AddQuizModal() {
+  // State variables for quiz title, description, loading state, and modal visibility
   const [quizTitle, setQuizTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { fetchQuizzes } = useUser();
+  const { fetchQuizzes } = useUser(); // Context function to refresh quizzes list
 
+  // Function to handle quiz creation
   const quizAdder = async () => {
+    // Check if both fields are filled
     if (!quizTitle.trim() || !description.trim()) {
       alert("Title and Description are required!");
       return;
     }
 
-    setLoading(true);
+    setLoading(true); // Set loading state to true
     try {
+      // Send a POST request to create a new quiz
       const response = await axios.post(`${API_URL}/quizzes`, {
         title: quizTitle,
         description: description,
-      }, { withCredentials: true });
+      }, { withCredentials: true }); // Ensure cookies are sent with the request
 
       if (response.status === 201) {
-        // alert("Quiz added successfully!");
+        // Reset form fields on successful creation
         setQuizTitle("");
         setDescription("");
-        fetchQuizzes();
-        setIsOpen(false); // Close the modal on success
+        fetchQuizzes(); // Refresh the quiz list
+        setIsOpen(false); // Close the modal
       } else {
         throw new Error("Failed to add quiz");
       }
@@ -42,7 +47,7 @@ export default function AddQuizModal() {
       console.error("Error adding quiz:", error);
       alert("Error adding quiz!");
     } finally {
-      setLoading(false);
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -88,7 +93,7 @@ export default function AddQuizModal() {
               <Button 
                 className="bg-blue-600 hover:bg-blue-700" 
                 onClick={quizAdder}
-                disabled={loading}
+                disabled={loading} // Disable button while loading
               >
                 {loading ? "Saving..." : "Save Quiz"}
               </Button>

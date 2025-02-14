@@ -16,12 +16,15 @@ export default function LoginPage() {
     console.log(user)
    
   };
-  useEffect(() => {
+  
+
+  //navigate to quiztable only if user is set
+  useEffect(() => {                               
     if (user) {
       console.log("User logged in:", user);
       navigate("/quiztable");
     }
-  }, [user, navigate]); 
+  }, [user]); 
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-900 text-white">
